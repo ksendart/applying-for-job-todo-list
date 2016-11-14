@@ -1,0 +1,7 @@
+<div ng-app="newTODOList" ng-controller="newTODOCtrl">
+  <ul>
+    <li ng-repeat="x in steps">{{x}}<span ng-click="removeStep($index)">×</span></li>
+  </ul>
+  <input ng-model="newStep">
+  <button ng-click="addStep()">Add</button>
+</div>
