@@ -47,44 +47,43 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
         
         var param = $routeParams.uniquekey;
         console.log(param);
-
-       
         var ref = new Firebase(fireBaseUrl);
-        if (param){
-        		ref.child('records').orderByChild('key').equalTo(param).once('value', function(snapshot){
-					$timeout(function() {
-						$scope.groups = snapshot.val();
-						return snapshot.val();
-					});			            
-			     });        	
-        }
-        else {
-        	datas = $firebase(ref.child('records'));
-        	$scope.groups = datas;
-        }
+        PrintTODO(param);       
+        
+
+        function PrintTODO(param){
+	        if (param){
+	        		ref.child('records').orderByChild('key').equalTo(param).once('value', function(snapshot){
+						$timeout(function() {
+							$scope.groups = snapshot.val();
+							return snapshot.val();
+						});			            
+				     });        	
+	        }
+	        else {
+	        	datas = $firebase(ref.child('records'));
+	        	$scope.groups = datas;
+	        }
+	    }
 
 
         $scope.removeItem = function(step){
-			console.log(ref);
 			ref.child('records').orderByChild('key').equalTo(param).once('value', function(snapshot){
 				$timeout(function() {
-					console.log(snapshot.ref());
-					console.log(snapshot.val());
 					snapshot.forEach(function(snap){
-
 						snap.ref().child('todolist').orderByChild('step').equalTo(step).once('value', function(snapshotRem){
 							$timeout(function() {
-								console.log(snapshotRem.ref());
-								console.log(snapshotRem.key());
 								snapshotRem.forEach(function(sn){
 									sn.ref().remove();
 								});
+								PrintTODO(param);
 							});
 						});
 					});
 					
 				});			            
-		     });
+		    });
+
 		};        
 
 		
@@ -93,29 +92,33 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 				$timeout(function() {
 					var newObj = {"step":step,"act":act};
 					snapshot.ref().child('todolist').push(newObj);
-					
+					$scope.newStep = "";
+					$scope.newDo = "";
+					PrintTODO(param);
 				});			            
 		     });
 		};
 
 
         $scope.removeTODO = function(key) {
-                ref.child('records').orderByChild('key').equalTo(key).once('value', function(snapshot){
-					$timeout(function() {
-						snapshot.forEach(function(sn){
-									sn.ref().remove();
-								});
-						
-					});			            
-			    });
-        	}; 
+            ref.child('records').orderByChild('key').equalTo(key).once('value', function(snapshot){
+				$timeout(function() {
+					snapshot.forEach(function(sn){
+								sn.ref().remove();
+					});
+					PrintTODO(param);
+				});			            
+		    });
+        }; 
 
         $scope.addTODOList = function(key){
-        			var item = {"key":key,"todolist":[]};
-        			$scope.groups.$add(item).then(function(p){
-		        		console.log(key);
-		        	});	        
-                };       
+			var item = {"key":key,"todolist":[]};
+			$scope.groups.$add(item).then(function(p){
+        		console.log(key);
+        		$scope.newKey = "";
+        		PrintTODO(param);
+        	});	        
+        };       
 
     });
 
