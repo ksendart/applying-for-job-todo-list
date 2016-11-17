@@ -9,7 +9,7 @@
                 <tr>
                     <th>Step <span class="glyphicon" ></span></th>
                     <th>Action <span class="glyphicon" ></span></th>
-                    <td ng-click="removeTODO(item.index)">&times;</td>
+                    <td ng-click="removeTODO(item.key)">&times;</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -22,6 +22,8 @@
             </table>
         </div>
     </div>
+    <p>Create new TODO list</p>
+
     <input ng-model="newKey">
     <button ng-click="addTODOList(newKey)">Add</button>
 </div>

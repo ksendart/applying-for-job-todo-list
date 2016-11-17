@@ -5,7 +5,6 @@
 <script src="https://code.angularjs.org/1.2.0-rc.2/angular-route.js"></script>
 <script src='https://cdn.firebase.com/js/client/2.1.1/firebase.js'></script>
 <script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script>
-<script src="js/linq.js"></script>
 
 
 </head>
@@ -25,10 +24,6 @@ app.config(function($routeProvider) {
         templateUrl : "edittodo.htm",
         controller : "editTODOCtrl"
     })
-    .when("/newtodo", {
-        templateUrl : "newtodo.htm",
-        controller : "newTODOCtrl"
-    })
 });
 app.controller("newTODOCtrl", function($scope) {
     $scope.steps = [];
@@ -42,61 +37,83 @@ app.controller("newTODOCtrl", function($scope) {
 });
 app.constant({fireBaseUrl: 'https://demotodolist-ff08f.firebaseio.com/'});
 app.controller('editTODOCtrl',function($scope,$routeParams){
-    $scope.todolistkey= $routeParams.uniquekey;//'emp_0'+ (parseInt($routeParams.uniquekey)+1);
+    $scope.todolistkey= $routeParams.uniquekey;
 
 });
 
 app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireBaseUrl,  $firebase ) {
-        Enumerable.Utils.extendTo(Array);
-        var emptyTODOList = {key:'',todolist:[{act:'',step:''}]};
+        
 
-        $scope.items = [];
-        $scope.isUpdate = false;
-        $scope.newTODO = emptyTODOList;
+        
         var param = $routeParams.uniquekey;
         console.log(param);
 
-        /*var select = param?'records/'+param+'/todolist':'records';
-        var datas = $firebase(new Firebase(fireBaseUrl+select));
-        $scope.groups = datas;*/
-
+       
         var ref = new Firebase(fireBaseUrl);
         if (param){
-        	//$scope.groups = $firebase(
         		ref.child('records').orderByChild('key').equalTo(param).once('value', function(snapshot){
 					$timeout(function() {
-						console.log(snapshot.val());
-						$scope.groups = snapshot.val()[0].todolist;
-						
-						console.log($scope.groups);
-						return snapshot.val()[0].todolist
+						$scope.groups = snapshot.val();
+						return snapshot.val();
 					});			            
-			     });
-        	
+			     });        	
         }
         else {
         	datas = $firebase(ref.child('records'));
-
         	$scope.groups = datas;
-        	console.log($scope.groups);
         }
-        
 
-        $scope.removeTODOAct = function(id) {
-                    $scope.groups.$remove(id);
-                }; 
 
-        $scope.addTODOAct = function(step, act){
-        			var item = {"step":step,"act":act};
-        			$scope.groups.$add(item).then(function(p){
-		        		console.log(act);
-		        	});	        
-                };
+        $scope.removeItem = function(step){
+			console.log(ref);
+			ref.child('records').orderByChild('key').equalTo(param).once('value', function(snapshot){
+				$timeout(function() {
+					console.log(snapshot.ref());
+					console.log(snapshot.val());
+					snapshot.forEach(function(snap){
+
+						snap.ref().child('todolist').orderByChild('step').equalTo(step).once('value', function(snapshotRem){
+							$timeout(function() {
+								console.log(snapshotRem.ref());
+								console.log(snapshotRem.key());
+								snapshotRem.forEach(function(sn){
+									sn.ref().remove();
+								});
+							});
+						});
+					});
+					
+				});			            
+		     });
+		};        
+
+		
+		$scope.addItem = function(step, act){
+			ref.child('records').orderByChild('key').equalTo(param).once('child_added', function(snapshot){
+				$timeout(function() {
+					var newObj = {"step":step,"act":act};
+					snapshot.ref().child('todolist').push(newObj);
+					
+				});			            
+		     });
+		};
+
+
+        $scope.removeTODO = function(key) {
+                ref.child('records').orderByChild('key').equalTo(key).once('value', function(snapshot){
+					$timeout(function() {
+						snapshot.forEach(function(sn){
+									sn.ref().remove();
+								});
+						
+					});			            
+			    });
+        	}; 
 
         $scope.addTODOList = function(key){
         			var item = {"key":key,"todolist":[]};
         			$scope.groups.$add(item).then(function(p){
-		        		console.log(act);
+		        		console.log(key);
 		        	});	        
                 };       
 
@@ -107,11 +124,6 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 <body>
 <div ng-app="myApp">
 	<p><a href="#/">Main</a></p>
-
-	<p><a href="#newtodo">Create new TODO list</a></p>
-
-	<a href="#edittodo/123">Red</a>
-
 	<div ng-view></div>
 
 </div>
