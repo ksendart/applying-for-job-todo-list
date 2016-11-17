@@ -1,0 +1,39 @@
+div.level1{
+	border-style: solid;
+    border-width: 1px;
+    border-color: rgba(204, 204, 204, 0.6);
+    margin: 2px;
+}
+div.header1{
+	border-style: solid;
+    border-width: 2px;
+    border-color: rgba(204, 204, 204, 0.6);
+    margin: 2px;
+    background-color: rgba(204, 204, 204, 0.2)
+}
+div.header1 a{
+	color:#000;
+	font-size: 16pt;
+	text-decoration: none;
+}
+div.header1 a:hover{
+	text-decoration: underline;
+}
+table.body1 {
+    border-collapse: collapse;
+    margin: 2px;
+}
+table.body1 th,td{
+	border-style: solid;
+    border-width: 1px;
+    border-color: rgba(204, 204, 204, 0.5);
+    padding: 3px;
+}
+a.mainlink{
+	color:#000;
+	font-size: 18pt;
+}
+button, input{
+	border: 2px solid rgba(204, 204, 204, 0.6);
+    border-radius: 6px;
+}

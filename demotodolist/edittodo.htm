@@ -2,10 +2,10 @@
 <div ng-controller="showTODOLists"> 
     <div>
         <div >
-            <h3>TODO Key <strong>{{ (todolistkey) }}</strong></h3>
+            <h3>TODO Key: <strong>{{ (todolistkey) }}</strong></h3>
         </div>
-        <div ng-repeat="item in groups">
-            <table>
+        <div class="level1" ng-repeat="item in groups">
+            <table class="body1">
                 <thead>
                 <tr>
                     <th>Step <span class="glyphicon" ></span></th>
@@ -23,8 +23,9 @@
             </table>
         </div>
     </div>
-    <input ng-model="newStep">
-    <input ng-model="newDo">
-    <button ng-click="addItem(newStep,newDo)">Add</button>
+    <p>Enter Step and Action</p>
+    <input ng-model="newStep" placeholder="Step number">
+    <input ng-model="newDo" placeholder="Action">
+    <button ng-click="addItem(newStep,newDo)">Add Action</button>
 
 </div>
