@@ -116,9 +116,11 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
         $scope.removeTODO = function(key) {
             ref.child('records').orderByChild('key').equalTo(key).once('value', function(snapshot){
 				$timeout(function() {
-					snapshot.forEach(function(sn){
-								sn.ref().remove();
-					});
+					if (snapshot.val()!= null) {
+						snapshot.forEach(function(sn){
+									sn.ref().remove();
+						});
+					}else alert("Cannot remove - object doesn't exist!");
 					PrintTODO(param);
 				});			            
 		    });
