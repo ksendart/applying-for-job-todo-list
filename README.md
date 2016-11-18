@@ -13,3 +13,13 @@ Application uses Firebase for data storing. Data are stored as json with simple 
 
 Clone this repository into your server (like XAMPP or other, I used XAMPP).
 This application will be available by URL like <i>http://yourserver/demotodolist/</i>. Also certain TODO list will be available by URL like <i>http://yourserver/demotodolist/#/edittodo/key</i> where <i>key</i> is TODOList identifier.
+
+<h3>Some additional information</h3>
+
+I apologize for the late deadline. I worked on tasks under my contract. Nevertheless, I found time to learn  AngularJS and FireBase slightly. It helped me implement test task. But I had some problem this second part of this task about parallel session detection. As I learned, AngularFire and FireBase (that I used) provide two operations for insert action: $save and $push. I started implementation with $push method. And when I started to implement second part, I found a article about it. This article said that: If the items don't have a natural key or you want them to be sorted "chronologically", you'll typically use push()/$add() to generate a key for you. This will ensure that the items are stored under a unique key and that newer items show up later in the list. So if you're working with users, you'll typically store then under their uid using something like ref.child('users').child(user.uid).set(user). On the other hand, if you're adding chat message to a chat room, you'll use something like ref.child('chat').push({ name: 'Adam Youngers', 'Firebase push() vs Angularfire $save()' }).
+
+As I understood, using of $push frees me from checking parallel session in app. I know, that maybe it doesn't meet the test task requirements, by I suppose that it  happens to be. 
+
+I suppose also that my app is not suitable for this test task according to your opinion. Anyway, I will be glad, if you allow me joining to your team not as junior-developer, but as trainee. 
+
+Thanks, my best regards.
