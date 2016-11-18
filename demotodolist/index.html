@@ -1,0 +1,29 @@
+<html>
+<head><meta charset="utf-8">
+<!--script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.js"></script-->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<!--script src="http://code.jquery.com/jquery-2.0.3.js"></script-->
+<script src="https://code.angularjs.org/1.2.0-rc.2/angular-route.js"></script>
+<!--script src='https://cdn.firebase.com/js/client/2.1.1/firebase.js'></script-->
+<script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+<!--script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script-->
+<script src="https://cdn.firebase.com/libs/angularfire/2.1.0/angularfire.min.js"></script>
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<script src="todolist.js"></script>
+
+<body>
+<div ng-app="myApp">
+	<p><a class="mainlink" href="#/">Main Page</a></p>
+	<div ng-controller="singInGoogle"> 
+<p>Wellcome, {{username}}! Choose TODOList or create NEW</p>
+</div>
+
+	<div ng-view></div>
+
+</div>
+</body>
+
+</html>

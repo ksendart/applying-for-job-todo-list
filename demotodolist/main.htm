@@ -1,0 +1,30 @@
+
+<div ng-controller="showTODOLists"> 
+    
+    <div class="level1" ng-repeat="item in groups">
+        <div  class="header1" ><a href="#edittodo/{{ item.key }}">Edit list {{ item.key }}</a></strong></h3>
+        </div>
+        <div >
+            <table class="body1">
+                <thead>
+                <tr>
+                    <th>Step <span class="glyphicon" ></span></th>
+                    <th>Action <span class="glyphicon" ></span></th>
+                    <td ng-click="removeTODO(item.key)">&times;</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="todoact in item.todolist">
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ todoact.act }}</td>
+                    <td></td>                    
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p>Create new TODO list: </p>
+    <p>Enter TODO key</p>
+    <input ng-model="newKey" placeholder="Key">
+    <button ng-click="addTODOList(newKey)">Add</button>
+</div>
