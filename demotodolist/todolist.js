@@ -1,4 +1,13 @@
 
+var config = {
+    apiKey: "AIzaSyBux6rJ4EiQ9Ub4UVx5ZmHupVVjbPKjJhQ",
+    authDomain: "demotodolist-ff08f.firebaseapp.com",
+    databaseURL: "https://demotodolist-ff08f.firebaseio.com",
+    storageBucket: "demotodolist-ff08f.appspot.com",
+    messagingSenderId: "1057956428948"
+  };
+  firebase.initializeApp(config);
+
 var app = angular.module("myApp", ["ngRoute", "firebase"]);
 app.run(function() {
 })
@@ -29,15 +38,29 @@ app.controller('editTODOCtrl',function($scope,$routeParams){
 
 });
 
-app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireBaseUrl,  $firebase ) {
+app.controller('singInGoogle',function($scope, $firebaseAuth ){
+
+	$scope.username =" user.. ";       
+
+        var auth = $firebaseAuth(); 
+        auth.$signInWithPopup('google').then(function(result) {
+        					$scope.username = result.user.displayName;
+							$scope.user = result.user;
+							console.log($scope.user);
+		}).catch(function(error) {
+			console.log(error);
+		});
+
+});
+
+app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireBaseUrl, $firebaseObject, $firebaseAuth ) {
         
 
         
         var param = $routeParams.uniquekey;
-        console.log(param);
-        var ref = new Firebase(fireBaseUrl);
-        PrintTODO(param);       
-        
+        var ref = firebase.database().ref();//new Firebase(fireBaseUrl);
+
+		PrintTODO(param); 
 
         function PrintTODO(param){
 	        if (param){
@@ -49,7 +72,7 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 				     });        	
 	        }
 	        else {
-	        	datas = $firebase(ref.child('records'));
+	        	datas = $firebaseObject(ref.child('records'));
 	        	$scope.groups = datas;
 	        }
 	    }
@@ -59,10 +82,11 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 			ref.child('records').orderByChild('key').equalTo(param).once('value', function(snapshot){
 				$timeout(function() {
 					snapshot.forEach(function(snap){
-						snap.ref().child('todolist').orderByChild('step').equalTo(step).once('value', function(snapshotRem){
+						var dataRef = snap.ref;
+						dataRef.child('todolist').orderByChild('step').equalTo(step).once('value', function(snapshotRem){
 							$timeout(function() {
 								snapshotRem.forEach(function(sn){
-									sn.ref().remove();
+									sn.ref.remove();
 								});
 								PrintTODO(param);
 							});
@@ -79,7 +103,8 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 			ref.child('records').orderByChild('key').equalTo(param).once('child_added', function(snapshot){
 				$timeout(function() {
 					var newObj = {"step":step,"act":act};
-					snapshot.ref().child('todolist').push(newObj);
+					var dataRef = snapshot.ref;
+					dataRef.child('todolist').push(newObj);
 					$scope.newStep = "";
 					$scope.newDo = "";
 					PrintTODO(param);
