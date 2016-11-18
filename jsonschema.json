@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "records",
+    "description": "data sample for TODO List",
+    "type": "object",
+    "properties": {
+        "key": {
+            "description": "The unique identifier for a TODOList",
+            "type": "string"
+        },
+        "todolist": {
+            "description": "TODO list steps",
+            "type": "object",
+            "properties" : {
+                "step" : {
+                    "description": "The identifier for a TODOList step",
+                    "type":"string"
+                    },
+                "act" : {
+                    "description": "The action description for a TODOList step",
+                    "type":"string"
+                }
+            }
+        }
+    }
+}
