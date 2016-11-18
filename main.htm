@@ -1,6 +1,5 @@
 
-<div ng-controller="showTODOLists"> 
-    
+<div ng-controller="showTODOLists">     
     <div class="level1" ng-repeat="item in groups">
         <div  class="header1" ><a href="#edittodo/{{ item.key }}">Edit list {{ item.key }}</a></strong></h3>
         </div>
@@ -25,6 +24,8 @@
     </div>
     <p>Create new TODO list: </p>
     <p>Enter TODO key</p>
-    <input ng-model="newKey" placeholder="Key">
-    <button ng-click="addTODOList(newKey)">Add</button>
+    <form name="newForm">
+        <input ng-model="newKey" placeholder="Key" ng-required="true">
+        <button ng-click="newForm.$valid && addTODOList(newKey)">Add</button>
+    </form>
 </div>

@@ -70,6 +70,7 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 
 		
 		$scope.addItem = function(step, act){
+			
 			ref.child('records').orderByChild('key').equalTo(param).once('child_added', function(snapshot){
 				$timeout(function() {
 					var newObj = {'step':step,'act':act};
@@ -101,7 +102,7 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 				$timeout(function() {
 					if (snapshot.val()!= null) {
 						snapshot.forEach(function(sn){
-									sn.ref().remove();
+									sn.ref.remove();
 						});
 					}else alert('Cannot remove - object does not exist!');
 					PrintTODO(param);
