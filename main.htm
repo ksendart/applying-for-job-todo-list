@@ -1,15 +1,17 @@
 
 <div ng-controller="showTODOLists">     
-    <div class="level1" ng-repeat="item in groups">
-        <div  class="header1" ><a href="#edittodo/{{ item.key }}">Edit list {{ item.key }}</a></strong></h3>
+    <div class="panel panel-info level1" ng-repeat="item in groups">
+        <div  class="panel-heading" >
+            <h4><a href="#edittodo/{{ item.key }}">Edit list {{ item.key }}</a>
+            </h4>
         </div>
-        <div >
-            <table class="body1">
+        <div class="panel-body">
+            <table class="table">
                 <thead>
                 <tr>
                     <th>Step <span class="glyphicon" ></span></th>
                     <th>Action <span class="glyphicon" ></span></th>
-                    <td ng-click="removeTODO(item.key)">&times;</td>
+                    <th ng-click="removeTODO(item.key)">&times;</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -22,10 +24,18 @@
             </table>
         </div>
     </div>
-    <p>Create new TODO list: </p>
-    <p>Enter TODO key</p>
-    <form name="newForm">
-        <input ng-model="newKey" placeholder="Key" ng-required="true">
-        <button ng-click="newForm.$valid && addTODOList(newKey)">Add</button>
-    </form>
+    <div class="panel panel-info level1">
+        <div  class="panel-heading" >
+            <p>Create new TODO list: </p>
+            <p>Enter TODO key</p>
+        </div>
+        <div class="panel-body">
+            <form class="navbar-form navbar-left" name="newForm">
+              <div class="form-group">
+                <input type="text" class="form-control" ng-model="newKey" ng-required="true" placeholder="Key">
+              </div>
+              <button ng-click="newForm.$valid && addTODOList(newKey)" class="btn btn-default">Add</button>
+            </form>
+        </div> 
+    </div>   
 </div>

@@ -1,7 +1,5 @@
 div.level1{
-	border-style: solid;
-    border-width: 1px;
-    border-color: rgba(204, 204, 204, 0.6);
+	width:80%;
     margin: 2px;
 }
 div.header1{
@@ -21,7 +19,7 @@ div.header1 a:hover{
 }
 table.body1 {
     border-collapse: collapse;
-    margin: 2px;
+    margin: 5px;
 }
 table.body1 th,td{
 	border-style: solid;
@@ -32,8 +30,4 @@ table.body1 th,td{
 a.mainlink{
 	color:#000;
 	font-size: 18pt;
-}
-button, input{
-	border: 2px solid rgba(204, 204, 204, 0.6);
-    border-radius: 6px;
 }

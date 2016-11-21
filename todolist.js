@@ -26,16 +26,43 @@ app.config(function($routeProvider) {
 
 app.constant({fireBaseUrl: 'https://demotodolist-ff08f.firebaseio.com/'});
 
-app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireBaseUrl, $firebaseArray, $firebaseAuth ) {
+app.service('demoService',function(){
+	this.checkField = function(str){
+		var result = false;
+		var chars = "*,[,],{,},/,*,.js,.sql";
+		theList = chars.split(",");
+		
+		for (x=0;x<theList.length;x++) {
+			if (str.indexOf(theList[x]) >= 0) {
+			    return false
+			}else{
+				result = true;
+			}
+		}
+		return result;
+	}
+	this.getRef = function(){
+		return firebase.database().ref();
+	}
+	this.getTODObyKey = function(ref,param){
+		return ref.child('records').orderByChild('key').equalTo(param);
+	}
+	this.getSteps = function(ref,step){
+		return ref.child('todolist').orderByChild('step').equalTo(step);
+	}
+});
+
+app.controller('showTODOLists', function($scope , $timeout, $routeParams,  $firebaseArray, demoService) {
+		
 		var param = $routeParams.uniquekey;
-		$scope.todolistkey= $routeParams.param;
-		var ref = firebase.database().ref();
+		$scope.todolistkey= param;
+		var ref = demoService.getRef();
 
 		PrintTODO(param); 
 
 		function PrintTODO(param){
 			if (param){
-				ref.child('records').orderByChild('key').equalTo(param).once('value', function(snapshot){
+				demoService.getTODObyKey(ref,param).once('value', function(snapshot){
 						$timeout(function() {
 							$scope.groups = snapshot.val();
 							return snapshot.val();
@@ -43,17 +70,17 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 					 });
 			}
 			else {
-				$scope.groups = $firebaseArray(ref.child('records'));//datas;
+				$scope.groups = $firebaseArray(ref.child('records'));
 			}
 		}
 
 
 		$scope.removeItem = function(step){
-			ref.child('records').orderByChild('key').equalTo(param).once('value', function(snapshot){
+			demoService.getTODObyKey(ref,param).once('value', function(snapshot){
 				$timeout(function() {
 					snapshot.forEach(function(snap){
 						var dataRef = snap.ref;
-						dataRef.child('todolist').orderByChild('step').equalTo(step).once('value', function(snapshotRem){
+						demoService.getSteps(dataRef,step).once('value', function(snapshotRem){
 							$timeout(function() {
 								snapshotRem.forEach(function(sn){
 									sn.ref.remove();
@@ -70,35 +97,40 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 
 		
 		$scope.addItem = function(step, act){
-			
-			ref.child('records').orderByChild('key').equalTo(param).once('child_added', function(snapshot){
-				$timeout(function() {
-					var newObj = {'step':step,'act':act};
-					var dataRef = snapshot.ref;
-					var isConfirm = false;
-					dataRef.child('todolist').orderByChild('step').equalTo(step).once('value', function(snapshotRem){
-						$timeout(function() {
-							if (snapshotRem.val != null){
-								isConfirm = confirm('Step already exist! Do you want to overwrite it?');
-								if(isConfirm){
-									snapshotRem.forEach(function(sn){
-										sn.ref.remove();
-									});
+			if (demoService.checkField(act) && demoService.checkField(step)){
+				demoService.getTODObyKey(ref,param).once('child_added', function(snapshot){
+					$timeout(function() {
+						var newObj = {'step':step,'act':act};
+						var dataRef = snapshot.ref;
+						var isConfirm = false;
+						demoService.getSteps(dataRef,step).once('value', function(snapshotRem){
+							$timeout(function() {
+								if (snapshotRem.val() != null){
+									isConfirm = confirm('Step already exist! Do you want to overwrite it?');
+									if(isConfirm){
+										snapshotRem.forEach(function(sn){
+											sn.ref.remove();
+										});
+										dataRef.child('todolist').push(newObj);
+										$scope.newStep = "";
+										$scope.newDo = "";
+									}
+								}else{
 									dataRef.child('todolist').push(newObj);
 									$scope.newStep = "";
 									$scope.newDo = "";
-									PrintTODO(param);
 								}
-							}
+								PrintTODO(param);
+							});
 						});
 					});
 				});
-			});
+			}else alert('Incorrect character! Step and act may consist of letters and numbers');
 		};
 
 
 		$scope.removeTODO = function(key) {
-			ref.child('records').orderByChild('key').equalTo(key).once('value', function(snapshot){
+			demoService.getTODObyKey(ref,key).once('value', function(snapshot){
 				$timeout(function() {
 					if (snapshot.val()!= null) {
 						snapshot.forEach(function(sn){
@@ -111,20 +143,22 @@ app.controller('showTODOLists', function($scope , $timeout, $routeParams,  fireB
 		}; 
 
 		$scope.addTODOList = function(key){
-			var item = {'key':key,'todolist':[]};
-			var flag = true;
-			$scope.groups.forEach(function(item){
-				if (item.key == key){
-					alert('List already exist! Type another name!')
-					flag = false;
-				}
-			});
-			if (flag){
-				$scope.groups.$add(item).then(function(p){
-					console.log(key);
-					$scope.newKey = "";
-					PrintTODO(param);
+			if (demoService.checkField(key)){
+				var item = {'key':key,'todolist':[]};
+				var flag = true;
+				$scope.groups.forEach(function(item){
+					if (item.key == key){
+						alert('List already exist! Type another name!')
+						flag = false;
+					}
 				});
-			}
+				if (flag){
+					$scope.groups.$add(item).then(function(p){
+						console.log(key);
+						$scope.newKey = "";
+						PrintTODO(param);
+					});
+				}
+			}else alert('Incorrect character! Key may consist of letters, "-" and numbers');
 		};
 });
